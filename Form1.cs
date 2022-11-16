@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using Microsoft.Win32.SafeHandles;
 using System.IO;
+using System.Xml.Linq;
 
 namespace LaptopSetup
 {
@@ -27,7 +28,13 @@ namespace LaptopSetup
             {
                 string strCmdText;
                 strCmdText = $"net user {txtUsername.Text} {txtPassword.Text} /add";
-                Process.Start("CMD.exe", strCmdText);
+                Process process = new Process();
+                ProcessStartInfo startInfo = new ProcessStartInfo("cmd.exe", strCmdText);
+                //startInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                startInfo.Verb = "runas";
+                process.StartInfo = startInfo;
+                process.Start();
+                //Process.Start("CMD.exe", strCmdText);
             }
             catch (Exception ex)
             {
@@ -36,6 +43,8 @@ namespace LaptopSetup
             finally
             {
                 MessageBox.Show($"User: {txtUsername.Text} created!");
+                txtPassword.Text = null;
+                txtUsername.Text = null; 
             }
         }
     }
